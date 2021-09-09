@@ -55,5 +55,46 @@ class ProductsController extends Controller
         return Redirect::route('admin.products');
     }
 
+    public function update($id)
+    {
+        $product = Product::find($id);
+
+        if($this->request->has('img')){
+            $img_name = strtotime(date('Y-m-d'))
+                .'_'.rand(11111,99999)
+                .'.'.$this->request->img->extension();
+
+            Storage::disk('public')->putFileAs(
+                'products',
+                $this->request->img,
+                $img_name
+            );
+
+            $this->request->merge([
+                'image' => 'products/'.$img_name
+            ]);
+        }
+
+        $product->update(
+            $this->request->except('_token')
+        );
+
+        return Redirect::route('admin.products');
+    }
+
+    public function show($id)
+    {
+        $product = Product::find($id);
+        return view('admin.products.edit')->withProduct($product);
+    }
+
+    public function delete($id)
+    {
+        $product = Product::find($id);
+        $product->delete();
+
+        return Redirect::route('admin.products');
+    }
+
 
 }
