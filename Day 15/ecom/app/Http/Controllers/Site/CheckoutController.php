@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Cache, Auth;
 use App\Models\Product;
@@ -46,9 +47,11 @@ class CheckoutController extends Controller
             'payment_status' => $charge->status,
             'status' => 'Processing'
         ]);
-        
-        if($charge->status == 'status') {
 
+        if($charge->status == 'succeeded') {
+            Cache::flush();
+
+            return back()->withSuccess(true);
         }
 
         abort(500);

@@ -24,4 +24,9 @@ class Order extends Model
         'payment_status',
         'status'
     ];
+
+    protected $casts = [
+        'order_items' => 'array',
+        'payment_response' => 'array'
+    ];
 }
