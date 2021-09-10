@@ -33,20 +33,22 @@ class CheckoutController extends Controller
             'description' => 'Order from :'.Auth::user()->name,
         ]);
 
+        Order::create([
+            'user_id' => Auth::id(),
+            'reference_no' => bcrypt(rand(11111, 99999)),
+            'order_items' => Cache::get('cart'),
+            'sub_total' => $this->request->total - 100,
+            'delivery_fee' => 100,
+            'total' => $this->request->total,
+            'full_address' => $this->request->address,
+            'payment_id' => $charge->id,
+            'payment_response' => $charge,
+            'payment_status' => $charge->status,
+            'status' => 'Processing'
+        ]);
+        
         if($charge->status == 'status') {
-            Order::create([
-                'user_id' => Auth::id(),
-                'reference_no' => bcrypt(rand(11111, 99999)),
-                'order_items' => Cache::get('cart'),
-                'sub_total' => $this->request->total - 100,
-                'delivery_fee' => 100,
-                'total' => $this->request->total,
-                'full_address' => $this->request->address,
-                'payment_id',
-                'payment_response',
-                'payment_status',
-                'status'
-            ]);
+
         }
 
         abort(500);
