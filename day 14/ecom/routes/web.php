@@ -12,13 +12,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group(['prefix' => 'admin'], function() {
-    foreach(glob(__DIR__ ."/admin/*.php") as $filename) {
+Route::group(['prefix' => 'admin'],function(){
+    foreach (glob(__DIR__ . "/admin/*.php") as $filename) {
         include $filename;
     }
 });
 
 foreach (glob(__DIR__ . "/site/*.php") as $filename) {
-include $filename;
+    include $filename;
 }
