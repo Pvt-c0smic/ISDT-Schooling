@@ -27,13 +27,29 @@ class CheckoutController extends Controller
     public function verify()
     {
         $charge = $this->stripe->charges->create([
-            'amount' => $this->request->total,
+            'amount' => number_format($this->request->total, 2, '',''),
             'currency' => 'php',
             'source' => 'tok_visa',
             'description' => 'Order from :'.Auth::user()->name,
         ]);
 
-        dd($charge);
+        if($charge->status == 'status') {
+            Order::create([
+                'user_id' => Auth::id(),
+                'reference_no' => bcrypt(rand(11111, 99999)),
+                'order_items' => Cache::get('cart'),
+                'sub_total' => $this->request->total - 100,
+                'delivery_fee' => 100,
+                'total' => $this->request->total,
+                'full_address' => $this->request->address,
+                'payment_id',
+                'payment_response',
+                'payment_status',
+                'status'
+            ]);
+        }
+
+        abort(500);
     }
 
     public function index()
