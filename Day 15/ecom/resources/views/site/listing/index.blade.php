@@ -3,7 +3,7 @@
     <main>
         <div class="page_header element_to_stick">
             <div class="container">
-                <div class="row"> 
+                <div class="row">
                     <div class="col-xl-8 col-lg-7 col-md-7"></div>
                     <div class="col-xl-4 col-lg-5 col-md-5">
                         <div class="search_bar_list">
@@ -11,18 +11,18 @@
                             <input type="submit" value="Search">
                         </div>
                     </div>
-                </div> 	       
+                </div>
             </div>
         </div>
-        
-        <div class="container margin_30_40">			
-            <div class="row"> 
+
+        <div class="container margin_30_40">
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="row">
                         @foreach($products as $item)
                             <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12">
                                 <div class="strip">
-                                    <figure> 
+                                    <figure>
                                         <img src="{{ URL::asset('theme/img/lazy-placeholder.png') }}" data-src="{{ URL::asset('storage/'.$item->image) }}" class="img-fluid lazy" alt="">
                                         <a href="detail-restaurant.html" class="strip_info">
                                             <small>{{ $item->category }}</small>
@@ -37,7 +37,7 @@
                                         <ul>
                                             <li><span>P {{ number_format($item->price, 2, '.', ',')}}</span></li>
                                             <li>
-                                                <a href="{{ URL::route('add.to.cart', $item->id) }}" class="score"> 
+                                                <a href="{{ URL::route('add.to.cart', $item->id) }}" class="score">
                                                     <strong>
                                                         Add to Cart
                                                     </strong>
@@ -46,11 +46,29 @@
                                     </ul>
                                     @endauth
                                 </div>
-                            </div> 
-                        @endforeach 
-                    </div> 
-                </div> 
-            </div>		
-        </div> 
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+@endsection
+@section('scripts')
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+
+    <script>
+
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('0b07b0d13b40744cb5c8', {
+            cluster: 'ap1'
+        });
+
+        var channel = pusher.subscribe('cart');
+        channel.bind('updated-{{ Auth::id() }}', function(data) {
+            document.getElementById('cart').innerHTML = '(' + data.cart +')';
+        });
+    </script>
 @endsection
