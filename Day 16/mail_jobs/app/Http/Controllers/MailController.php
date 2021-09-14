@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\MailSenderJob;
 use App\Mail\NewsletterMail;
 use Illuminate\Http\Request;
 USE Illuminate\Support\Facades\Mail;
@@ -22,12 +23,9 @@ class MailController extends Controller
 
     public function process()
     {
-        $template = new NewsletterMail(
-            $this->request->message
-        );
-
-        Mail::to($this->request->email)
-            ->send($template);
+        dispatch(new MailSenderJob(
+            $this->request->all()
+        ))->onQueue('emails');
 
         return back();
     }
